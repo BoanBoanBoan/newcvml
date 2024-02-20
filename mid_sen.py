@@ -1,6 +1,7 @@
 import os
 import pypdf
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 # Function to extract text from a PDF file
@@ -14,13 +15,23 @@ def extract_text_from_pdf(pdf_path):
     return text
 
 
+# Function to predict category using TF-IDF and cosine similarity
+def predict_category(new_cv_tfidf, tfidf_matrix, data):
+    cosine_similarities = cosine_similarity(new_cv_tfidf, tfidf_matrix)
+    most_similar_index = cosine_similarities.argmax()
+    if most_similar_index < len(data):
+        return data[most_similar_index][1]
+    return None
+
+
 # Example usage
 root_directories = {
-    'Senior Specialist': "generator_pos/middle_specialist_pdfs",
+    'Senior Specialist': "generator_pos/senior_specialist_pdfs",
     'Middle Specialist': "generator_pos/middle_specialist_pdfs",
 }
 
 resume_data_common = []
+
 for role, directory in root_directories.items():
     for filename in os.listdir(directory):
         if filename.endswith(".pdf"):
@@ -28,33 +39,25 @@ for role, directory in root_directories.items():
             text = extract_text_from_pdf(resume_path)
             resume_data_common.append((text, role))
 
-# Train Doc2Vec model using resume_data_common
-tagged_data = [TaggedDocument(words=text.split(), tags=[role]) for text, role in resume_data_common]
-model = Doc2Vec(vector_size=100, window=5, min_count=1, workers=4, epochs=20)
-model.build_vocab(tagged_data)
-model.train(tagged_data, total_examples=model.corpus_count, epochs=model.epochs)
+# Train TF-IDF vectorizer on training data
+tfidf_vectorizer = TfidfVectorizer()
+tfidf_matrix = tfidf_vectorizer.fit_transform([text for text, _ in resume_data_common])
 
 # Example usage for predicting category
-new_cv_path = "Profile.pdf"
+new_cv_path = "JD (1).pdf"
 new_cv_text = extract_text_from_pdf(new_cv_path)
-
-# Remove newline characters and extra spaces
 new_cv_text = ' '.join(new_cv_text.split())
 
-# Check if the word "senior" is present in the new CV
-if "senior" in new_cv_text.lower():
+# Check if the word "computer science" or similar is present in the new CV
+if "senior" in new_cv_text.lower() or "team lead" in new_cv_text.lower():
     most_similar_tag = 'Senior Specialist'
     confidence_percentage = 100.0
 else:
-    # Infer vector for the new CV
-    new_vector = model.infer_vector(new_cv_text.split())
+    # Transform the new CV
+    new_cv_tfidf = tfidf_vectorizer.transform([new_cv_text])
 
-    # Find the most similar documents and their cosine similarity scores
-    similar_documents = model.dv.most_similar([new_vector], topn=len(model.dv))
-    similarity_scores = {tag: score for tag, score in similar_documents}
+    # Predict category using TF-IDF and cosine similarity
+    most_similar_tag = predict_category(new_cv_tfidf, tfidf_matrix, resume_data_common)
 
-    # Get the predicted category with the highest similarity score
-    most_similar_tag = max(similarity_scores, key=similarity_scores.get)
-    confidence_percentage = similarity_scores[most_similar_tag] * 100
-
-print(f"The predicted category for the new CV is: {most_similar_tag} with confidence: {confidence_percentage:.2f}%")
+if most_similar_tag is not None:
+    print(f"The predicted category for the new CV is: {most_similar_tag}")
