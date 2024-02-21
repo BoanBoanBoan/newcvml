@@ -1,38 +1,14 @@
 from reportlab.pdfgen import canvas
 import os
-from random import sample
-from education_info import education_prog_or_not
+from dict_for_cv.education_info import education_prog_or_not
+from dict_for_cv.skills_info import java_skills
 
 
 def generate_java_cv_template():
     name = "John Doe"
     contact = "johndoe@email.com | (123) 456-7890"
 
-    skills = ["Java", "Object-Oriented Programming", "Java Virtual Machine (JVM)", "Java Development Kit (JDK)",
-              "Java Standard Edition (Java SE)", "Java Enterprise Edition (Java EE)", "Spring Framework", "Spring Boot",
-              "Hibernate", "JPA (Java Persistence API)", "Servlets", "JSP (JavaServer Pages)", "JavaFX", "Swing",
-              "Maven", "Gradle", "JUnit", "TestNG", "Mockito", "RESTful Web Services", "SOAP Web Services",
-              "Microservices", "Spring Security", "JWT (JSON Web Tokens)", "Authentication and Authorization",
-              "JDBC (Java Database Connectivity)", "SQL", "NoSQL Databases", "JMS (Java Message Service)", "JAX-RS",
-              "JAX-WS", "XML Processing (DOM, SAX, JAXB)", "JSON Processing (Jackson, Gson)", "Design Patterns",
-              "Concurrency", "Multithreading", "Networking", "Socket Programming", "Swing GUI Development",
-              "JavaFX GUI Development", "Logging (SLF4J, Log4j)", "Dependency Injection",
-              "Aspect-Oriented Programming (AOP)", "Java EE Containers (Tomcat, Jetty, WildFly, GlassFish)",
-              "Build Automation", "Continuous Integration (Jenkins, Bamboo)", "Containerization (Docker)",
-              "Cloud Platforms (AWS, Azure, Google Cloud)", "Monitoring and Performance Tuning",
-              "Security Best Practices", "Unit Testing", "Integration Testing",
-              "Code Quality Tools (SonarQube, PMD, FindBugs)", "Version Control Systems (Git, SVN)",
-              "Agile Methodologies (Scrum, Kanban)"]
 
-    shuffled_skills = sample(skills, len(skills))
-
-    if "Java" not in shuffled_skills:
-        shuffled_skills.pop()
-        shuffled_skills.insert(0, "Java")
-
-    additional_skills = shuffled_skills[1:9]
-    additional_skills_str = ",\n".join(additional_skills)
-    additional_skills_str_formatted = additional_skills_str.replace('\n', '\n    ')
 
     template = f"""
     Curriculum Vitae
@@ -46,7 +22,7 @@ def generate_java_cv_template():
 
     Skills:
     Java, 
-    {additional_skills_str_formatted}
+    {java_skills()}
 
     Work Experience:
     - Java Developer, Company XYZ, 2019-present

@@ -1,37 +1,12 @@
 from reportlab.pdfgen import canvas
 import os
-from random import sample
-from education_info import education_prog_or_not
+from dict_for_cv.education_info import education_prog_or_not
+from dict_for_cv.skills_info import qa_skills
 
 
 def generate_qa_cv_template():
     name = "Alice Williams"
     contact = "alicewilliams@email.com | (555) 123-9876"
-
-    skills = [ "Software Testing", "Test Planning", "Test Case Design", "Test Execution",
-               "Defect Reporting and Tracking", "Manual Testing", "Automated Testing", "Selenium WebDriver", "TestNG",
-               "JUnit", "Cucumber", "Behavior-Driven Development (BDD)", "Gherkin Syntax", "API Testing", "Postman",
-               "REST Assured", "Load Testing", "Performance Testing", "JMeter", "Gatling", "Security Testing",
-               "OWASP ZAP", "Burp Suite", "Mobile Testing", "Appium", "Test Automation Frameworks",
-               "Keyword-Driven Testing", "Data-Driven Testing", "Page Object Model (POM)", "TestNG Annotations",
-               "Continuous Integration/Continuous Deployment (CI/CD)", "Jenkins", "Git", "GitHub", "GitLab",
-               "Version Control Systems", "Agile Methodologies", "Scrum", "Kanban", "Defect Management Tools",
-               "JIRA", "Bugzilla", "Test Management Tools", "TestRail", "Zephyr", "HP ALM", "Test Documentation",
-               "Test Plans", "Test Cases", "Test Scripts", "Test Reports", "Regression Testing",
-               "User Acceptance Testing (UAT)", "Exploratory Testing", "Cross-Browser Testing",
-               "Cross-Platform Testing", "Localization Testing", "Internationalization Testing",
-               "Accessibility Testing", "Usability Testing", "Smoke Testing", "Sanity Testing", "White Box Testing",
-               "Black Box Testing", "Gray Box Testing", "QA"
-]
-    shuffled_skills = sample(skills, len(skills))
-
-    if "QA" not in shuffled_skills:
-        shuffled_skills.pop()
-        shuffled_skills.insert(0, "QA")
-
-    additional_skills = shuffled_skills[1:9]
-    additional_skills_str = ",\n".join(additional_skills)
-    additional_skills_str_formatted = additional_skills_str.replace('\n', '\n    ')
 
     template = f"""
     Curriculum Vitae
@@ -45,7 +20,7 @@ def generate_qa_cv_template():
 
     Skills:
     QA, 
-    {additional_skills_str_formatted}
+    {qa_skills()}
 
     Work Experience:
     - QA Engineer, Company XYZ, 2012-present

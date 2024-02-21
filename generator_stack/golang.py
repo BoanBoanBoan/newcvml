@@ -1,27 +1,12 @@
 from reportlab.pdfgen import canvas
 import os
-from random import sample
-from education_info import education_prog_or_not
+from dict_for_cv.education_info import education_prog_or_not
+from dict_for_cv.skills_info import golang_skills
 
 
 def generate_golang_cv_template():
     name = "Alice Smith"
     contact = "alicesmith@email.com | (555) 123-4567"
-
-    skills = ["Go", "Golang", "Concurrency", "HTTP", "JSON", "Database", "RESTful APIs", "Websockets",
-        "Testing", "Modules", "Configuration", "Microservices", "Image Manipulation", "Templates",
-        "Monitoring and Logging", "Docker", "Kubernetes", "Encryption", "Archives", "File System",
-        "Networking", "Regular Expressions", "Exception Handling", "Command Line Development"]
-
-    shuffled_skills = sample(skills, len(skills))
-
-    if "Go" not in shuffled_skills:
-        shuffled_skills.pop()
-        shuffled_skills.insert(0, "Go")
-
-    additional_skills = shuffled_skills[1:9]
-    additional_skills_str = ",\n".join(additional_skills)
-    additional_skills_str_formatted = additional_skills_str.replace('\n', '\n    ')
 
     template = f"""
     Curriculum Vitae
@@ -35,7 +20,7 @@ def generate_golang_cv_template():
 
     Skills:
     Go,
-    {additional_skills_str_formatted}
+    {golang_skills()}
 
     Work Experience:
     - Golang Developer, Company XYZ, 2013-present

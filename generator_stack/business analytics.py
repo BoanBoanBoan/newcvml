@@ -1,33 +1,12 @@
 from reportlab.pdfgen import canvas
 import os
-from random import sample
-from education_info import education_prog_or_not
+from dict_for_cv.education_info import education_prog_or_not
+from dict_for_cv.skills_info import business_analytics_skills
 
 
 def generate_business_analytics_cv_template():
     name = "Eva Miller"
     contact = "evamiller@email.com | (555) 456-7890"
-
-    skills = ["Microsoft Power BI", "Data Analysis", "Statistical Modeling", "Business Intelligence",
-              "Data Visualization", "Predictive Analytics", "Microsoft Excel", "Tableau", "QlikView",
-              "SAS", "Statistical Analysis System", "Python", "Pandas", "NumPy", "Matplotlib", "R", "dplyr",
-              "ggplot2", "tidyr", "Google Analytics", "SAP BusinessObjects", "IBM Cognos Analytics",
-              "SQL", "Database Management", "Machine Learning", "Data Mining", "ETL (Extract, Transform, Load)",
-              "Data Warehousing", "Data Cleaning", "Data Governance", "Hadoop", "Spark", "Big Data Analytics",
-              "Natural Language Processing (NLP)", "Time Series Analysis", "Regression Analysis", "Decision Trees",
-              "Cluster Analysis", "A/B Testing", "Financial Modeling", "Risk Analysis", "Market Research",
-              "Customer Segmentation", "Dashboard Design", "Report Automation", "KPI Tracking",
-              "Storytelling with Data"]
-
-    shuffled_skills = sample(skills, len(skills))
-
-    if "Microsoft Power BI" not in shuffled_skills:
-        shuffled_skills.pop()
-        shuffled_skills.insert(0, "Microsoft Power BI")
-
-    additional_skills = shuffled_skills[1:9]
-    additional_skills_str = ",\n".join(additional_skills)
-    additional_skills_str_formatted = additional_skills_str.replace('\n', '\n    ')
 
     template = f"""
     Curriculum Vitae
@@ -41,7 +20,7 @@ def generate_business_analytics_cv_template():
 
     Skills:
     Microsoft Power BI, 
-    {additional_skills_str_formatted}
+    {business_analytics_skills()}
     
 
     Work Experience:

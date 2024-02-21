@@ -58,3 +58,5 @@ def education_prog_or_not():
     master_degree = choice([master_non_programming, master_programming])
     education = choice(bachelor_degree) + "\n" + "    " + choice(master_degree)
     return education
+
+

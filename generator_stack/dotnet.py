@@ -1,26 +1,12 @@
 from reportlab.pdfgen import canvas
 import os
-from random import sample
-from education_info import education_prog_or_not
+from dict_for_cv.education_info import education_prog_or_not
+from dict_for_cv.skills_info import dotnet_skills
 
 
 def generate_dotnet_cv_template():
     name = "Michael Johnson"
     contact = "michaeljohnson@email.com | (555) 789-1234"
-
-    skills = ["C#", "C# Programming", ".NET Framework", "ASP.NET", "ASP.NET Core", "MVC", "Web API",
-    "Entity Framework", "LINQ", "SQL Server", "RESTful API Design", "Unit Testing", "Dependency Injection",
-    "Software Design Patterns", "Git", "Agile Methodologies", "Continuous Integration", "Containerization (Docker)",
-    "Configuration Management (Ansible)", "Cloud Services (AWS, Azure)", "Monitoring and Logging"]
-
-    shuffled_skills = sample(skills, len(skills))
-    if "C#" not in shuffled_skills:
-        shuffled_skills.pop()
-        shuffled_skills.insert(0, "C#")
-
-    additional_skills = shuffled_skills[1:9]
-    additional_skills_str = ",\n".join(additional_skills)
-    additional_skills_str_formatted = additional_skills_str.replace('\n', '\n    ')
 
     template = f"""
     Curriculum Vitae
@@ -34,7 +20,7 @@ def generate_dotnet_cv_template():
 
     Skills:
     C#,
-    {additional_skills_str_formatted}
+    {dotnet_skills()}
 
     Work Experience:
     - DevOps Engineer, Company XYZ, 2009-present

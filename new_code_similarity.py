@@ -4,7 +4,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# Function to extract text from a PDF file
 def extract_text_from_pdf(pdf_path):
     text = ''
     with open(pdf_path, 'rb') as file:
