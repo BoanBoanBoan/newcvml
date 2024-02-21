@@ -10,6 +10,14 @@
     <form action="/predict" method="post" enctype="multipart/form-data">
         <label for="new_cv_path">Upload new CV (PDF):</label>
         <input type="file" id="new_cv_path" name="new_cv_path" accept=".pdf" required>
+
+        <br>
+
+        <label for="jd_file">Upload Job Description (PDF):</label>
+        <input type="file" id="jd_file" name="jd_file" accept=".pdf" required>
+
+        <br>
+
         <button type="submit">Predict</button>
     </form>
 </body>
