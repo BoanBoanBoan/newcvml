@@ -7,9 +7,9 @@
 </head>
 <body>
     <h1>Category Prediction</h1>
-    <form action="/predict" method="post">
-        <label for="new_cv_path">Path to new CV (PDF):</label>
-        <input type="text" id="new_cv_path" name="new_cv_path" required>
+    <form action="/predict" method="post" enctype="multipart/form-data">
+        <label for="new_cv_path">Upload new CV (PDF):</label>
+        <input type="file" id="new_cv_path" name="new_cv_path" accept=".pdf" required>
         <button type="submit">Predict</button>
     </form>
 </body>

@@ -50,7 +50,7 @@ tfidf_vectorizer = TfidfVectorizer()
 tfidf_matrix = tfidf_vectorizer.fit_transform([text for text, _ in resume_data_common])
 
 # Example usage for predicting category
-new_cv_path = "Resume.pdf"
+new_cv_path = "samples_of_pdf/Resume.pdf"
 new_cv_text = extract_text_from_pdf(new_cv_path)
 new_cv_text = ' '.join(new_cv_text.split())
 

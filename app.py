@@ -6,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 app = Flask(__name__)
 
+
 # Function to extract text from a PDF file
 def extract_text_from_pdf(pdf_path):
     text = ''
@@ -15,6 +16,7 @@ def extract_text_from_pdf(pdf_path):
             page = pdf_reader.pages[page_num]
             text += page.extract_text()
     return text
+
 
 # Example usage
 root_directories = {
@@ -28,6 +30,7 @@ root_directories = {
     'Java': "generator_stack/java_dev_pdfs",
 }
 
+
 def predict_category(new_cv_tfidf, tfidf_matrix, data):
     cosine_similarities = cosine_similarity(new_cv_tfidf, tfidf_matrix)
     most_similar_index = cosine_similarities.argmax()
@@ -35,7 +38,6 @@ def predict_category(new_cv_tfidf, tfidf_matrix, data):
         return data[most_similar_index][1]
     return None
 
-# Example usage
 resume_data_common = []
 
 for role, directory in root_directories.items():
@@ -49,16 +51,18 @@ for role, directory in root_directories.items():
 tfidf_vectorizer = TfidfVectorizer()
 tfidf_matrix = tfidf_vectorizer.fit_transform([text for text, _ in resume_data_common])
 
-# ... (existing code)
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 @app.route('/predict', methods=['POST'])
 def predict():
     if request.method == 'POST':
-        new_cv_path = request.form['new_cv_path']
+        new_cv_file = request.files['new_cv_path']
+        new_cv_path = 'samples_of_pdf/' + new_cv_file.filename
+        new_cv_file.save(new_cv_path)
         new_cv_text = extract_text_from_pdf(new_cv_path)
         new_cv_text = ' '.join(new_cv_text.split())
         new_cv_tfidf = tfidf_vectorizer.transform([new_cv_text])
@@ -68,6 +72,7 @@ def predict():
         else:
             return render_template('result.html', category='Unknown')
     return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
