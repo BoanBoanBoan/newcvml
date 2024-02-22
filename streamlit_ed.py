@@ -1,10 +1,8 @@
 import os
-from flask import Flask, render_template, request
+import streamlit as st
 import pypdf
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
-app = Flask(__name__)
 
 # Function to extract text from a PDF file
 def extract_text_from_pdf(pdf_path):
@@ -14,7 +12,7 @@ def extract_text_from_pdf(pdf_path):
         for page_num in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_num]
             text += page.extract_text()
-    return textz
+    return text
 
 root_directories = {
     'Frontend React': "generator_stack/frontend_react_pdfs",
@@ -47,20 +45,16 @@ for role, directory in root_directories.items():
 tfidf_vectorizer = TfidfVectorizer()
 tfidf_matrix = tfidf_vectorizer.fit_transform([text for text, _ in resume_data_common])
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# Streamlit code starts here
+st.title('Category Prediction')
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    if request.method == 'POST':
-        new_cv_file = request.files['new_cv_path']
-        new_cv_path = 'samples_of_pdf/' + new_cv_file.filename
-        new_cv_file.save(new_cv_path)
+new_cv_file = st.file_uploader("Upload new CV (PDF)", type=['pdf'])
+jd_file = st.file_uploader("Upload Job Description (PDF)", type=['pdf'])
 
-        jd_file = request.files['jd_file']
-        jd_path = 'samples_of_pdf/' + jd_file.filename
-        jd_file.save(jd_path)
+if st.button('Predict'):
+    if new_cv_file is not None and jd_file is not None:
+        new_cv_path = 'samples_of_pdf/' + new_cv_file.name
+        jd_path = 'samples_of_pdf/' + jd_file.name
 
         new_cv_text = extract_text_from_pdf(new_cv_path)
         jd_text = extract_text_from_pdf(jd_path)
@@ -75,11 +69,8 @@ def predict():
         most_similar_tag_jd = predict_category(jd_tfidf, tfidf_matrix, resume_data_common)
 
         if most_similar_tag_cv is not None and most_similar_tag_jd is not None:
-            return render_template('result.html', category_cv=most_similar_tag_cv, category_jd=most_similar_tag_jd)
+            st.write('The predicted category for the new CV is:', most_similar_tag_cv)
+            st.write('The predicted category for the Job Description is:', most_similar_tag_jd)
         else:
-            return render_template('result.html', category_cv='Unknown', category_jd='Unknown')
-
-    return render_template('index.html')
-
-if __name__ == '__main__':
-    app.run(debug=True)
+            st.write('The predicted category for the new CV is: Unknown')
+            st.write('The predicted category for the Job Description is: Unknown')
