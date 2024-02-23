@@ -4,11 +4,11 @@ import pypdf
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from openai import OpenAI
+from congig import api_key
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key=api_key)
 
 
-# Function to extract text from a PDF file
 def extract_text_from_pdf(pdf_path):
     text = ''
     with open(pdf_path, 'rb') as file:
@@ -82,19 +82,23 @@ if st.button('Predict'):
             st.write('The predicted category for the new CV is: Unknown')
             st.write('The predicted category for the Job Description is: Unknown')
 
-        prompt = f"Analyze this resume against the job description: \n\nJob Description:\n{jd_text}\n\nResume:\n{new_cv_text}\n\nProvide a percentage match and recommendations for improvement."
-
-        analyze_button = st.button('Analyze')
 
 analyze_button = st.button('Analyze')
 
 if analyze_button:
 
     if new_cv_file is not None and jd_file is not None:
+        new_cv_path = 'samples_of_pdf/' + new_cv_file.name
+        jd_path = 'samples_of_pdf/' + jd_file.name
+
+        new_cv_text = extract_text_from_pdf(new_cv_path)
+        jd_text = extract_text_from_pdf(jd_path)
+
+        new_cv_text = ' '.join(new_cv_text.split())
+        jd_text = ' '.join(jd_text.split())
 
         prompt = f"Analyze this resume against the job description: \n\nJob Description:\n{jd_text}\n\nResume:\n{new_cv_text}\n\nProvide a percentage match and recommendations for improvement."
 
-        # Sending the prompt to the OpenAI API
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -108,41 +112,3 @@ if analyze_button:
     else:
         st.write("Please make sure both the job description and resume are entered before analyzing.")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-from openai import OpenAI
-
-client = OpenAI(api_key="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")
-
-# Example of a complex input prompt. In practice, you'd construct this based on user input or file content.
-job_description = "Here's the job description..."
-resume = "Here's the resume..."
-prompt = f"Analyze this resume against the job description: \n\nJob Description:\n{job_description}\n\nResume:\n{resume}\n\nProvide a percentage match and recommendations for improvement."
-
-while True:
-    user_input = input("Enter 'analyze' to evaluate the resume or 'quit' to exit: ")
-    if user_input.lower() == 'quit':
-        break
-
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt},
-            {"role": "system", "content": "You are a helpful assistant."}
-        ]
-    )
-
-    print(response.choices[0].message.content)
