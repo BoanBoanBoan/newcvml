@@ -21,7 +21,7 @@ def extract_text_from_pdf(pdf_path):
         pdf_reader = pypdf.PdfReader(file)
         for page_num in range(len(pdf_reader.pages)):
             page = pdf_reader.pages[page_num]
-            text += page.extract_text()
+            text += page.extract_text(
     return text
 
 root_directories = {
